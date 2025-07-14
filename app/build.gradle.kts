@@ -110,6 +110,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.converter.moshi)
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.0") // ✅ Moshi annotation processor
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2") // Show retrofit logs
 
     //Retrofit + Gson -> https://github.com/square/retrofit | https://github.com/google/gson
     //implementation(libs.retrofit)

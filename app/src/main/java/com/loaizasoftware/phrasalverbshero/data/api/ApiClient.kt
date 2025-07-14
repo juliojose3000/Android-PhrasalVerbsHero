@@ -6,6 +6,7 @@ import com.loaizasoftware.phrasalverbshero.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -24,11 +25,17 @@ class ApiClient {
             .add(KotlinJsonAdapterFactory()) // Allows Moshi to handle Kotlin classes properly
             .build()
 
+        // Create and configure the logging interceptor
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY // Logs request and response lines and their respective headers and bodies (if present)
+        }
+
         val client = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS) // Connection timeout
             .readTimeout(30, TimeUnit.SECONDS)    // Read timeout
             .writeTimeout(30, TimeUnit.SECONDS)   // Write timeout
             .addInterceptor(ChuckerInterceptor(context)) // Add Chucker interceptor
+            .addInterceptor(loggingInterceptor)
             .build()
 
         apiService = Retrofit.Builder()
