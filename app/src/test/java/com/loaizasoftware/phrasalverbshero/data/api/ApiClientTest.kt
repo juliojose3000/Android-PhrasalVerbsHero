@@ -1,7 +1,6 @@
 package com.loaizasoftware.phrasalverbshero.data.api
 
 import android.content.Context
-import com.loaizasoftware.phrasalverbshero.BuildConfig
 import com.loaizasoftware.phrasalverbshero.domain.model.Verb
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -13,7 +12,6 @@ import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import io.reactivex.Single
 import org.mockito.Mockito.mock
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -86,7 +84,7 @@ class ApiClientTest {
         // ✅ Assertions
         assertNotNull(verbsListResponse) // Ensure response is not null
         assertEquals(1, verbsListResponse.size) // Ensure only 1 verb is returned
-        assertEquals("go", verbsListResponse[0].name) // Verify verb name
+        assertEquals("go", verbsListResponse[0].verb) // Verify verb name
         assertEquals(1, verbsListResponse[0].phrasalVerbs.size) // Ensure 1 phrasal verb exists
         assertEquals("go on", verbsListResponse[0].phrasalVerbs[0].phrasalVerb) // Verify phrasal verb name
         //assertTrue(true)

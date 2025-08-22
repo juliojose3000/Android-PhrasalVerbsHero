@@ -1,7 +1,5 @@
 package com.loaizasoftware.phrasalverbshero.data.repository
 
-import com.loaizasoftware.phrasalverbshero.core.network.ApiResult
-import com.loaizasoftware.phrasalverbshero.core.network.safeApiCall
 import com.loaizasoftware.phrasalverbshero.data.api.ApiService
 import com.loaizasoftware.phrasalverbshero.domain.model.Definition
 import com.loaizasoftware.phrasalverbshero.domain.model.PhrasalVerb
@@ -11,23 +9,23 @@ import io.reactivex.schedulers.Schedulers
 
 class PhrasalVerbRepositoryImpl(private val apiService: ApiService): PhrasalVerbRepository {
 
-    override fun getPhrasalVerbs(verbId: Long): Single<List<PhrasalVerb>> {
+    override suspend fun getPhrasalVerbs(verbId: Long): List<PhrasalVerb> {
         return apiService.getPhrasalVerbs(verbId)
     }
 
-    override fun getPhrasalVerbsSafely(verbId: Long): Single<ApiResult<List<PhrasalVerb>>> {
+    /*override fun getPhrasalVerbsSafely(verbId: Long): Single<ApiResult<List<PhrasalVerb>>> {
         return Single.fromCallable {
             safeApiCall {
                 apiService.getPhrasalVerbs(verbId).blockingGet()
             }
         }.subscribeOn(Schedulers.io())
-    }
+    }*/
 
-    override fun getPhrasalVerbDefinitions(phrasalVerbId: Long): Single<List<Definition>> {
+    override suspend fun getPhrasalVerbDefinitions(phrasalVerbId: Long): List<Definition> {
         return apiService.getPhrasalVerbDefinitions(phrasalVerbId)
     }
 
-    override fun getPhrasalVerbs(phrasalVerbPart: String): Single<List<PhrasalVerb>> {
+    override suspend fun getPhrasalVerbs(phrasalVerbPart: String): List<PhrasalVerb> {
         return apiService.getPhrasalVerbs(phrasalVerbPart)
     }
 

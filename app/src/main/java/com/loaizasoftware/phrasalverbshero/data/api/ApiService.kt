@@ -11,25 +11,25 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("api/verbs")
-    fun getVerbs(): Call<List<Verb>>
+    /*@GET("api/verbs")
+    fun getVerbs(): Call<List<Verb>>*/
 
     @GET("api/verbs")
-    fun getVerbsSingle(): Single<List<Verb>>
+    suspend fun getVerbsSingle(): List<Verb>
 
     @GET("api/phrasalverbs/getByVerbId")
-    fun getPhrasalVerbs(@Query("verbId") verbId: Long): Single<List<PhrasalVerb>>
+    suspend fun getPhrasalVerbs(@Query("verbId") verbId: Long): List<PhrasalVerb>
 
     @GET("api/phrasalverbs/getByPrepOrAdverb")
-    fun getPhrasalVerbs(@Query("prepositionAdverb") prepositionAdverb: String): Single<List<PhrasalVerb>>
+    suspend fun getPhrasalVerbs(@Query("prepositionAdverb") prepositionAdverb: String): List<PhrasalVerb>
 
     @GET("api/phrasalverbs/getDefinitions")
-    fun getPhrasalVerbDefinitions(@Query("phrasalVerbId") phrasalVerbId: Long): Single<List<Definition>>
+    suspend fun getPhrasalVerbDefinitions(@Query("phrasalVerbId") phrasalVerbId: Long): List<Definition>
 
     @GET("api/questions/getSelectDefinitionQuestions")
-    fun getQuestions(@Query("phrasalVerbPart") phrasalVerbPart: String): Single<List<Question>>
+    suspend fun getQuestions(@Query("phrasalVerbPart") phrasalVerbPart: String): List<Question>
 
     @GET("api/phrasalverbs/getAllPrepAndAdverbs")
-    fun getPrepsAdverbs(): Single<List<String>>
+    suspend fun getPrepsAdverbs(): List<String>
 
 }

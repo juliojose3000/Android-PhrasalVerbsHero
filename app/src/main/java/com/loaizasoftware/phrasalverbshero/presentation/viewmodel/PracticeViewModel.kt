@@ -11,15 +11,17 @@ import com.loaizasoftware.phrasalverbshero.domain.usecase.GetSelectDefinitionQue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-@HiltViewModel
-class PracticeViewModel @Inject constructor(private val getSelectDefinitionsUseCase: GetSelectDefinitionQuestionsUseCase): BaseViewModel() {
+//@HiltViewModel
+class PracticeViewModel /*@Inject constructor*/(private val getSelectDefinitionsUseCase: GetSelectDefinitionQuestionsUseCase): BaseViewModel() {
 
     val selectedAnswers = mutableStateMapOf<Int, Long?>() // Map to hold selected answers for each question
 
@@ -69,7 +71,30 @@ class PracticeViewModel @Inject constructor(private val getSelectDefinitionsUseC
     @SuppressLint("CheckResult")
     fun getSelectDefinitionsQuestions(phrasalVerbPart: String) {
 
-        getSelectDefinitionsUseCase.run(phrasalVerbPart)
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            try {
+                val questions = withContext(Dispatchers.IO) {
+                    getSelectDefinitionsUseCase.run(phrasalVerbPart)
+                }
+
+                shuffledAnswersList.addAll(
+                    questions.map { question ->
+                        question.getAllAnswers().shuffled()
+                    }
+                )
+
+                _uiState.value = UiState.Success(questions)
+
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                error.value = e
+                Timber.e(e)
+            }
+        }
+
+
+        /*getSelectDefinitionsUseCase.run(phrasalVerbPart)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { _uiState.value = UiState.Loading }
@@ -86,7 +111,7 @@ class PracticeViewModel @Inject constructor(private val getSelectDefinitionsUseC
                 _uiState.value = UiState.Error(it.message ?: "Unknown error")
                 error.value = it
                 Timber.e(it)
-            })
+            })*/
 
     }
 

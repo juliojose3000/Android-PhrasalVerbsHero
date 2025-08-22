@@ -80,6 +80,7 @@ dependencies {
 
     implementation(project(":core_ui"))
     implementation(project(":core"))
+    implementation(project(":shared"))
 
     // ----------------------------
     // 🔷 ANDROIDX + COMPOSE CORE

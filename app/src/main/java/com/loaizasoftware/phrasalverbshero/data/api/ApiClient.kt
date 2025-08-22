@@ -43,7 +43,7 @@ class ApiClient {
             .client(client)
             //.addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi)) // Use Moshi converter to deserialize JSON responses
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create()) //Allows Retrofit works with RxJava
+            //.addCallAdapterFactory(RxJava2CallAdapterFactory.create()) //Allows Retrofit works with RxJava
             .build()
             .create(ApiService::class.java)
 

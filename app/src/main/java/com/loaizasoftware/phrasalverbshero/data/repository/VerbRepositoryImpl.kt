@@ -8,15 +8,15 @@ import retrofit2.Call
 
 open class VerbRepositoryImpl(private val apiService: ApiService): VerbRepository {
 
-    override fun getVerbs(): Call<List<Verb>> {
+    /*override suspend fun getVerbs(): List<Verb> {
         return apiService.getVerbs()  // Just delegates to ApiService
-    }
+    }*/
 
-    override fun getVerbsSingle(): Single<List<Verb>> {
+    override suspend fun getVerbsSingle(): List<Verb> {
         return apiService.getVerbsSingle()  // Just delegates to ApiService
     }
 
-    override fun getPrepsAdverbs(): Single<List<String>> {
+    override suspend fun getPrepsAdverbs(): List<String> {
         return apiService.getPrepsAdverbs()
     }
 

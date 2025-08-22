@@ -1,4 +1,4 @@
-package com.loaizasoftware.phrasalverbshero.utils
+package com.loaizasoftware.phrasalverbshero.core.utils
 
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await

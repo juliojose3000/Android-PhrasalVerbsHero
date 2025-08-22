@@ -3,25 +3,22 @@ package com.loaizasoftware.phrasalverbshero.presentation.viewmodel
 import android.annotation.SuppressLint
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.loaizasoftware.phrasalverbshero.core.None
-import com.loaizasoftware.phrasalverbshero.domain.model.Verb
+import androidx.lifecycle.viewModelScope
+import com.loaizasoftware.shared.core.None
 import com.loaizasoftware.phrasalverbshero.domain.usecase.GetPrepsAdverbsUseCase
 import com.loaizasoftware.phrasalverbshero.domain.usecase.GetVerbsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-@HiltViewModel
-open class MainViewModel @Inject constructor(
+//@HiltViewModel
+open class MainViewModel /*@Inject constructor*/(
     private val getVerbsUseCase: GetVerbsUseCase,
     private val getPrepsAdverbsUseCase: GetPrepsAdverbsUseCase
-) :
-    BaseViewModel() {
+) : BaseViewModel() {
 
     //private val _verbsState = mutableStateOf(emptyList<Verb>())
     private val _cardsTextState = mutableStateOf(emptyList<String>())
@@ -41,8 +38,25 @@ open class MainViewModel @Inject constructor(
     @SuppressLint("CheckResult")
     private fun loadVerbsUsingRxJava() {
 
+        isLoading.value = true
+
+        viewModelScope.launch {
+
+            try {
+                val verbs = getVerbsUseCase.run(None())
+                filteredVerbs.value = verbs.map { verb -> verb.verb }
+            } catch (e: Exception) {
+                onErrorResponse.value = e.message
+                sendEvent("Error: ${e.message}")
+                Timber.e(e.cause)
+            } finally {
+                isLoading.value = false
+            }
+
+        }
+
         //Get verbs from API using RxJava
-        getVerbsUseCase.run(None())
+        /*getVerbsUseCase.run(None())
             .subscribeOn(Schedulers.io()) // Perform network operation on IO thread
             .observeOn(AndroidSchedulers.mainThread()) // Update UI on main thread
             .doOnSubscribe{
@@ -59,14 +73,32 @@ open class MainViewModel @Inject constructor(
                 onErrorResponse.value = it.message
                 sendEvent("Error: ${it.message}")
                 Timber.e(it.cause)
-            })
+            })*/
 
     }
 
     @SuppressLint("CheckResult")
     fun loadPrepsAdverbs() {
 
-        getPrepsAdverbsUseCase.run(None())
+        viewModelScope.launch {
+
+            isLoading.value = true
+
+            try {
+                val prepsAdverbs = getPrepsAdverbsUseCase.run(None())
+                _cardsTextState.value = prepsAdverbs
+                filteredVerbs.value = prepsAdverbs
+            } catch (e: Exception) {
+                onErrorResponse.value = e.message
+                sendEvent("Error: ${e.message}")
+                Timber.e(e.cause)
+            } finally {
+                isLoading.value = false
+            }
+
+        }
+
+        /*getPrepsAdverbsUseCase.run(None())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { isLoading.value = true }
@@ -78,11 +110,11 @@ open class MainViewModel @Inject constructor(
                 onErrorResponse.value = it.message
                 sendEvent("Error: ${it.message}")
                 Timber.e(it.cause)
-            })
+            })*/
 
     }
 
-    private fun loadVerbsUsingRetrofit() {
+    /*private fun loadVerbsUsingRetrofit() {
 
         //Get verbs from API using Retrofit
         getVerbsUseCase.execute().enqueue(object : Callback<List<Verb>> {
@@ -109,7 +141,7 @@ open class MainViewModel @Inject constructor(
 
         })
 
-    }
+    }*/
 
     /*fun getVerbById(verbId: Long): Verb? {
         return _verbsState.value.find { it.id == verbId }

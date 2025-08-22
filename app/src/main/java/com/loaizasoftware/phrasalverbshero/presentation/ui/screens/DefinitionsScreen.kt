@@ -47,7 +47,7 @@ import com.loaizasoftware.phrasalverbshero.domain.model.Example
 import com.loaizasoftware.phrasalverbshero.domain.model.Definition
 import com.loaizasoftware.phrasalverbshero.domain.model.PhrasalVerb
 import com.loaizasoftware.phrasalverbshero.presentation.viewmodel.PhrasalVerbsViewModel
-import com.loaizasoftware.phrasalverbshero.utils.FileUtils
+import com.loaizasoftware.phrasalverbshero.core.utils.FileUtils
 
 
 @Composable

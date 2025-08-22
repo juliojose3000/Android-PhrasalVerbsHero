@@ -15,7 +15,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.loaizasoftware.phrasalverbshero.core.None
+import com.loaizasoftware.shared.core.None
 import com.loaizasoftware.phrasalverbshero.data.api.ApiService
 import com.loaizasoftware.phrasalverbshero.data.repository.VerbRepositoryImpl
 import com.loaizasoftware.phrasalverbshero.domain.model.Definition
@@ -92,31 +92,31 @@ class VerbsScreenTest {
 
 
 class FakeApiService : ApiService {
-    override fun getVerbs(): Call<List<Verb>> {
+    /*override fun getVerbs(): Call<List<Verb>> {
+        throw UnsupportedOperationException("Not used in UI test")
+    }*/
+
+    override fun getVerbsSingle(): List<Verb> {
         throw UnsupportedOperationException("Not used in UI test")
     }
 
-    override fun getVerbsSingle(): Single<List<Verb>> {
-        throw UnsupportedOperationException("Not used in UI test")
-    }
-
-    override fun getPhrasalVerbs(verbId: Long): Single<List<PhrasalVerb>> {
+    override fun getPhrasalVerbs(verbId: Long): List<PhrasalVerb> {
         throw UnsupportedOperationException("Not used in this test")
     }
 
-    override fun getPhrasalVerbs(prepositionAdverb: String): Single<List<PhrasalVerb>> {
+    override fun getPhrasalVerbs(prepositionAdverb: String): List<PhrasalVerb> {
         throw UnsupportedOperationException("Not used in this test")
     }
 
-    override fun getPhrasalVerbDefinitions(phrasalVerbId: Long): Single<List<Definition>> {
+    override fun getPhrasalVerbDefinitions(phrasalVerbId: Long): List<Definition> {
         throw UnsupportedOperationException("Not used in this test")
     }
 
-    override fun getQuestions(phrasalVerbPart: String): Single<List<Question>> {
+    override fun getQuestions(phrasalVerbPart: String): List<Question> {
         throw UnsupportedOperationException("Not used in this test")
     }
 
-    override fun getPrepsAdverbs(): Single<List<String>> {
+    override fun getPrepsAdverbs(): List<String> {
         throw UnsupportedOperationException("Not used in this test")
     }
 }
@@ -124,13 +124,13 @@ class FakeApiService : ApiService {
 class FakeVerbRepositoryImpl : VerbRepositoryImpl(FakeApiService())
 
 class FakeGetVerbsUseCase : GetVerbsUseCase(FakeVerbRepositoryImpl()) {
-    override fun run(params: None): Single<List<Verb>> {
+    override fun run(params: None): List<Verb> {
         return Single.just(emptyList()) // Not used in UI test
     }
 }
 
 class FakeGetPrepsAdverbsUseCase : GetPrepsAdverbsUseCase(FakeVerbRepositoryImpl()) {
-    override fun run(params: None): Single<List<String>> {
+    override fun run(params: None): List<String> {
         return super.run(params)
     }
 }

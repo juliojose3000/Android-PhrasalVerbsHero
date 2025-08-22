@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 class QuestionRepositoryImpl(private val apiService: ApiService): QuestionRepository {
 
-    override fun getQuestions(phrasalVerbPart: String): Single<List<Question>> {
+    override suspend fun getQuestions(phrasalVerbPart: String): List<Question> {
         return apiService.getQuestions(phrasalVerbPart)
     }
 

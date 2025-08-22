@@ -21,6 +21,16 @@ import com.loaizasoftware.phrasalverbshero.core.receiver.AirplaneModeReceiver
 import com.loaizasoftware.phrasalverbshero.presentation.ui.screens.PhrasalVerbsScreen
 import com.loaizasoftware.phrasalverbshero.presentation.ui.screens.MainScreen
 import com.loaizasoftware.core_ui.theme.PhrasalVerbsHeroTheme
+import com.loaizasoftware.phrasalverbshero.data.repository.VerbRepositoryImpl
+import com.loaizasoftware.phrasalverbshero.domain.repository.PhrasalVerbRepository
+import com.loaizasoftware.phrasalverbshero.domain.repository.QuestionRepository
+import com.loaizasoftware.phrasalverbshero.domain.repository.VerbRepository
+import com.loaizasoftware.phrasalverbshero.domain.usecase.GetDefinitionsUseCase
+import com.loaizasoftware.phrasalverbshero.domain.usecase.GetPhrasalVerbsByPart
+import com.loaizasoftware.phrasalverbshero.domain.usecase.GetPhrasalVerbsUseCase
+import com.loaizasoftware.phrasalverbshero.domain.usecase.GetPrepsAdverbsUseCase
+import com.loaizasoftware.phrasalverbshero.domain.usecase.GetSelectDefinitionQuestionsUseCase
+import com.loaizasoftware.phrasalverbshero.domain.usecase.GetVerbsUseCase
 import com.loaizasoftware.phrasalverbshero.presentation.ui.screens.DefinitionsScreen
 import com.loaizasoftware.phrasalverbshero.presentation.ui.screens.PracticeScreen
 import com.loaizasoftware.phrasalverbshero.presentation.viewmodel.PhrasalVerbsViewModel
@@ -30,6 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint //Allows Dagger to inject dependencies into Android classes such as Activities, Fragments, and Services
 class MainActivity : BaseActivity() {
@@ -38,19 +49,45 @@ class MainActivity : BaseActivity() {
     //verbViewModel is a dependency of the MainActivity class
     //The MainActivity class depends on verbViewModel to handle the data and UI logic
     //@Inject
-    private val mainViewModel: MainViewModel by viewModels()
+    //private val mainViewModel: MainViewModel by viewModels()
+
+    private lateinit var mainViewModel: MainViewModel
 
     //@Inject
-    private val phrasalVerbsViewModel: PhrasalVerbsViewModel by viewModels()
+    //private val phrasalVerbsViewModel: PhrasalVerbsViewModel by viewModels()
+    private lateinit var phrasalVerbsViewModel: PhrasalVerbsViewModel
 
-    private val practiceViewModel: PracticeViewModel by viewModels()
+    //private val practiceViewModel: PracticeViewModel by viewModels()
+    private lateinit var practiceViewModel: PracticeViewModel
 
     private lateinit var receiver: AirplaneModeReceiver
+
+    @Inject
+    lateinit var verbRepository: VerbRepository
+
+    @Inject
+    lateinit var phrasalVerbRepository: PhrasalVerbRepository
+
+    @Inject
+    lateinit var questionRepository: QuestionRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //(application as PhrasalVerbsHeroApplication).appComponent.inject(this)// Get the application component and inject the MainActivity's dependencies
+
+        val getVerbsUseCase = GetVerbsUseCase(verbRepository)
+        val getPrepsAdverbsUseCase = GetPrepsAdverbsUseCase(verbRepository)
+        mainViewModel = MainViewModel(getVerbsUseCase, getPrepsAdverbsUseCase)
+
+        val getPhrasalVerbsUseCase = GetPhrasalVerbsUseCase(phrasalVerbRepository)
+        val getDefinitionsUseCase = GetDefinitionsUseCase(phrasalVerbRepository)
+        val getPhrasalVerbsByPart = GetPhrasalVerbsByPart(phrasalVerbRepository)
+
+        phrasalVerbsViewModel = PhrasalVerbsViewModel(getPhrasalVerbsUseCase, getDefinitionsUseCase, getPhrasalVerbsByPart)
+
+        val getSelectDefinitionQuestionsUseCase = GetSelectDefinitionQuestionsUseCase(questionRepository)
+        practiceViewModel = PracticeViewModel(getSelectDefinitionQuestionsUseCase)
 
         enableEdgeToEdge()
         setContent {
@@ -59,7 +96,7 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        initStrictMode()
+        //initStrictMode()
         initReceivers()
         initObservables()
 
